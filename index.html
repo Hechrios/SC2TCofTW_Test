@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>简繁字形转换器 · SC → TW</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/noto-sans-cjk-tc.css?v=3">
+  <link rel="stylesheet" href="css/style.css?v=5">
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow--1" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow--2" aria-hidden="true"></div>
+  <div class="bg-scan" aria-hidden="true"></div>
+
+  <main class="app">
+    <header class="header">
+      <div class="brand">
+        <div class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
+            <rect x="3" y="3" width="11" height="26" rx="2.5" stroke="url(#g1)" stroke-width="1.6"/>
+            <rect x="18" y="3" width="11" height="26" rx="2.5" stroke="url(#g2)" stroke-width="1.6"/>
+            <path d="M14 16 H18" stroke="url(#g1)" stroke-width="1.6" stroke-linecap="round"/>
+            <path d="M15.5 13 L16.5 16 L15.5 19" stroke="url(#g2)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                <stop stop-color="#B8C9DA"/><stop offset="1" stop-color="#9CB0C3"/>
+              </linearGradient>
+              <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+                <stop stop-color="#8FA3B6"/><stop offset="1" stop-color="#6B8194"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="brand__text">
+          <h1>简繁字形转换器</h1>
+          <p>大陆标准简体 → 台湾标准繁体</p>
+        </div>
+      </div>
+      <div class="status" id="status">
+        <span class="status__dot"></span>
+        <span class="status__text">正在加载字典…</span>
+      </div>
+    </header>
+
+    <section class="workspace">
+      <div class="panel panel--input">
+        <div class="panel__head">
+          <span class="panel__tag">INPUT</span>
+          <span class="panel__label">输入 · 简体</span>
+        </div>
+        <textarea id="input" class="panel__field panel__field--input"
+          placeholder="在此输入简体汉字…" spellcheck="false" autocomplete="off"></textarea>
+        <div class="panel__foot">
+          <span id="inputCount" class="panel__count">0 字</span>
+          <button id="clear" class="link-btn" type="button">清空</button>
+        </div>
+      </div>
+
+      <div class="action">
+        <div class="action__rail action__rail--top"></div>
+        <button id="convert" class="convert-btn" type="button" disabled aria-label="转化为台湾繁体">
+          <span class="convert-btn__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+              <path d="M4 12h14m0 0l-5-5m5 5l-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="convert-btn__text">转化</span>
+        </button>
+        <div class="action__rail action__rail--bottom"></div>
+        <span class="action__hint">SC → TW</span>
+      </div>
+
+      <div class="panel panel--output">
+        <div class="panel__head">
+          <span class="panel__tag panel__tag--accent">OUTPUT</span>
+          <span class="panel__label">输出 · 繁体 (TW)</span>
+        </div>
+        <textarea id="output" class="panel__field panel__field--output"
+          readonly placeholder="转化结果将显示于此…"></textarea>
+        <div class="panel__foot">
+          <span id="outputInfo" class="panel__count">待转化</span>
+          <button id="copy" class="link-btn" type="button">复制</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>字典基于 OpenCC · 短语消歧 + 字形标准化</span>
+      <span class="footer__dot">·</span>
+      <span>输出字形以 Noto Sans CJK TC 渲染</span>
+      <span class="footer__dot">·</span>
+      <span>歧义字形分行显示整句</span>
+      <span class="footer__note">当一个简体字型对应多个繁体字型时，在部分语境下，词库无法准确判断对应的繁体字型，此时会将可能的结果全部列出，请见谅</span>
+    </footer>
+  </main>
+
+  <script src="js/app.js?v=3"></script>
+</body>
+</html>
