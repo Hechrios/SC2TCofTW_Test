@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>简繁字形转换器 · SC → TW</title>
+  <title>简繁字形转换器 · SC ↔ TW</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/noto-sans-cjk-tc.css?v=3">
-  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="stylesheet" href="css/style.css?v=6">
 </head>
 <body>
   <div class="bg-grid" aria-hidden="true"></div>
@@ -37,7 +37,7 @@
         </div>
         <div class="brand__text">
           <h1>简繁字形转换器</h1>
-          <p>大陆标准简体 → 台湾标准繁体</p>
+          <p id="subtitle">大陆标准简体 → 台湾标准繁体</p>
         </div>
       </div>
       <div class="status" id="status">
@@ -49,8 +49,8 @@
     <section class="workspace">
       <div class="panel panel--input">
         <div class="panel__head">
-          <span class="panel__tag">INPUT</span>
-          <span class="panel__label">输入 · 简体</span>
+          <span class="panel__tag" id="inputTag">INPUT</span>
+          <span class="panel__label" id="inputLabel">输入 · 简体</span>
         </div>
         <textarea id="input" class="panel__field panel__field--input"
           placeholder="在此输入简体汉字…" spellcheck="false" autocomplete="off"></textarea>
@@ -62,6 +62,14 @@
 
       <div class="action">
         <div class="action__rail action__rail--top"></div>
+        <button id="swap" class="swap-btn" type="button" aria-label="切换转换方向" title="切换简繁方向">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+            <path d="M7 4L3 8l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3 8h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M17 20l4-4-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M21 16H7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
         <button id="convert" class="convert-btn" type="button" disabled aria-label="转化为台湾繁体">
           <span class="convert-btn__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
@@ -71,16 +79,15 @@
           <span class="convert-btn__text">转化</span>
         </button>
         <div class="action__rail action__rail--bottom"></div>
-        <span class="action__hint">SC → TW</span>
+        <span class="action__hint" id="actionHint">SC → TW</span>
       </div>
 
       <div class="panel panel--output">
         <div class="panel__head">
-          <span class="panel__tag panel__tag--accent">OUTPUT</span>
-          <span class="panel__label">输出 · 繁体 (TW)</span>
+          <span class="panel__tag panel__tag--accent" id="outputTag">OUTPUT</span>
+          <span class="panel__label" id="outputLabel">输出 · 繁体 (TW)</span>
         </div>
-        <textarea id="output" class="panel__field panel__field--output"
-          readonly placeholder="转化结果将显示于此…"></textarea>
+        <div id="output" class="panel__field panel__field--output" tabindex="0"></div>
         <div class="panel__foot">
           <span id="outputInfo" class="panel__count">待转化</span>
           <button id="copy" class="link-btn" type="button">复制</button>
@@ -93,11 +100,11 @@
       <span class="footer__dot">·</span>
       <span>输出字形以 Noto Sans CJK TC 渲染</span>
       <span class="footer__dot">·</span>
-      <span>歧义字形分行显示整句</span>
-      <span class="footer__note">当一个简体字型对应多个繁体字型时，在部分语境下，词库无法准确判断对应的繁体字型，此时会将可能的结果全部列出，请见谅</span>
+      <span>歧义字形以加粗标注，其余候选可展开查看</span>
+      <span class="footer__note">当一个简体字型对应多个繁体字型时，在部分语境下，词库无法准确判断对应的繁体字型，此时会将最可能的结果加粗显示，其余候选折叠于下拉菜单中，请见谅</span>
     </footer>
   </main>
 
-  <script src="js/app.js?v=3"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>
