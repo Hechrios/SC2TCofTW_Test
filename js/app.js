@@ -189,27 +189,32 @@
       basePartsHtml.push(ambiSet.has(i) ? '<strong>' + text + '</strong>' : text);
     }
 
-    const candidateLines = [];
+    const candidateData = [];
     const seen = new Set();
     const baseRaw = segs.map(function (s) { return s.trads[0]; }).join("");
     const baseFinal = mode === "s2t" ? applyTwPhrases(baseRaw) : baseRaw;
     seen.add(baseFinal);
 
     function generateCandidates(depth, current) {
-      if (candidateLines.length >= MAX_CANDIDATES) return;
+      if (candidateData.length >= MAX_CANDIDATES) return;
       if (depth === ambi.length) {
         const line = current.join("");
         const finalLine = mode === "s2t" ? applyTwPhrases(line) : line;
         if (!seen.has(finalLine)) {
           seen.add(finalLine);
-          candidateLines.push(finalLine);
+          const partsHtml = [];
+          for (let i = 0; i < segs.length; i++) {
+            const segText = escapeHtml(current[i]);
+            partsHtml.push(ambiSet.has(i) ? '<strong>' + segText + '</strong>' : segText);
+          }
+          candidateData.push(partsHtml.join(""));
         }
         return;
       }
       const segIdx = ambi[depth];
       const options = segs[segIdx].trads;
       for (let j = 1; j < options.length; j++) {
-        if (candidateLines.length >= MAX_CANDIDATES) return;
+        if (candidateData.length >= MAX_CANDIDATES) return;
         current[segIdx] = options[j];
         generateCandidates(depth + 1, current);
       }
@@ -218,16 +223,16 @@
 
     let html = '<div class="amb-line amb">';
     html += basePartsHtml.join("");
-    if (candidateLines.length > 0) {
-      html += '<details><summary>另有 ' + candidateLines.length + ' 种可能</summary><div class="amb-candidates">';
-      for (let k = 0; k < candidateLines.length; k++) {
-        html += '<div class="amb-candidate-item"><span class="amb-candidate-item__num">' + (k + 1) + '</span><span class="amb-candidate-item__text">' + escapeHtml(candidateLines[k]) + '</span></div>';
+    if (candidateData.length > 0) {
+      html += '<details><summary>另有 ' + candidateData.length + ' 种可能</summary><div class="amb-candidates">';
+      for (let k = 0; k < candidateData.length; k++) {
+        html += '<div class="amb-candidate-item"><span class="amb-candidate-item__num">' + (k + 1) + '</span><span class="amb-candidate-item__text">' + candidateData[k] + '</span></div>';
       }
       html += '</div></details>';
     }
     html += '</div>';
 
-    return { html: html, count: candidateLines.length + 1, ambiCount: ambi.length };
+    return { html: html, count: candidateData.length + 1, ambiCount: ambi.length };
   }
 
   function updateInputCount() {
