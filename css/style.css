@@ -274,6 +274,8 @@ body {
   word-break: break-word;
   padding: 8px 4px;
 }
+[data-mode="t2s"] .panel__field--input { font-family: var(--font-tc); }
+[data-mode="t2s"] .panel__field--output { font-family: var(--font-sc); }
 .panel__field--output:empty::before {
   content: "转化结果将显示于此…";
   color: var(--text-faint);

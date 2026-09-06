@@ -241,7 +241,10 @@
   }
 
   function updateModeUI() {
+    document.documentElement.setAttribute("data-mode", mode);
     if (mode === "s2t") {
+      $input.style.fontFamily = "";
+      $output.style.fontFamily = "";
       $subtitle.textContent = "大陆标准简体 → 台湾标准繁体";
       $inputLabel.textContent = "输入 · 简体";
       $outputLabel.textContent = "输出 · 繁体 (TW)";
@@ -251,6 +254,8 @@
       $input.placeholder = "在此输入简体汉字…";
       $convert.setAttribute("aria-label", "转化为台湾繁体");
     } else {
+      $input.style.fontFamily = '"Noto Sans CJK TC", "Noto Sans SC", system-ui, sans-serif';
+      $output.style.fontFamily = '"Noto Sans SC", "Noto Sans CJK SC", system-ui, sans-serif';
       $subtitle.textContent = "台湾标准繁体 → 大陆标准简体";
       $inputLabel.textContent = "输入 · 繁体 (TW)";
       $outputLabel.textContent = "输出 · 简体";
