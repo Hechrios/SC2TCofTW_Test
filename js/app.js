@@ -11,6 +11,8 @@
 
   let mode = "s2t";
 
+  document.documentElement.setAttribute("data-theme", "night");
+
   const $input = document.getElementById("input");
   const $output = document.getElementById("output");
   const $convert = document.getElementById("convert");
@@ -27,6 +29,7 @@
   const $inputTag = document.getElementById("inputTag");
   const $outputTag = document.getElementById("outputTag");
   const $actionHint = document.getElementById("actionHint");
+  const $themeBtn = document.getElementById("themeBtn");
 
   const MAX_CANDIDATES = 12;
 
@@ -218,7 +221,7 @@
     if (candidateLines.length > 0) {
       html += '<details><summary>另有 ' + candidateLines.length + ' 种可能</summary><div class="amb-candidates">';
       for (let k = 0; k < candidateLines.length; k++) {
-        html += '<span>' + escapeHtml(candidateLines[k]) + '</span>';
+        html += '<div class="amb-candidate-item"><span class="amb-candidate-item__num">' + (k + 1) + '</span><span class="amb-candidate-item__text">' + escapeHtml(candidateLines[k]) + '</span></div>';
       }
       html += '</div></details>';
     }
@@ -307,6 +310,10 @@
     mode = mode === "s2t" ? "t2s" : "s2t";
     updateModeUI();
     doConvert();
+  });
+  $themeBtn.addEventListener("click", function () {
+    const cur = document.documentElement.getAttribute("data-theme");
+    document.documentElement.setAttribute("data-theme", cur === "day" ? "night" : "day");
   });
   $input.addEventListener("input", updateInputCount);
   $input.addEventListener("keydown", function (e) {
