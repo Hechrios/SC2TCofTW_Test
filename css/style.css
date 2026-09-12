@@ -632,7 +632,7 @@ body {
 .panel__field--output {
   font-family: var(--font-tc);
   color: var(--text-output);
-  line-height: 1.9;
+  line-height: 1.85;
   overflow-y: auto;
   white-space: pre-wrap;
   word-break: break-word;
@@ -841,10 +841,7 @@ body {
 .amb strong {
   font-weight: 700;
   color: var(--strong-color);
-  background: var(--strong-bg);
-  border-radius: 2px;
-  padding: 0 3px;
-  box-shadow: 0 0 8px var(--strong-glow);
+  letter-spacing: inherit;
 }
 .amb details {
   display: inline-block;

@@ -360,7 +360,20 @@
   if ($swapRail) $swapRail.addEventListener("click", function () { $swap.click(); });
   if ($clearRail) $clearRail.addEventListener("click", function () { $clear.click(); });
   $copy.addEventListener("click", async function () {
-    const text = $output.textContent;
+    var parts = [];
+    var nodes = $output.querySelectorAll(".amb-line");
+    if (nodes.length === 0) {
+      var raw = $output.textContent;
+      if (raw) parts.push(raw);
+    } else {
+      for (var i = 0; i < nodes.length; i++) {
+        var clones = nodes[i].cloneNode(true);
+        var details = clones.querySelectorAll("details");
+        for (var d = 0; d < details.length; d++) details[d].remove();
+        parts.push(clones.textContent);
+      }
+    }
+    var text = parts.join("\n");
     if (!text) return;
     try {
       await navigator.clipboard.writeText(text);
