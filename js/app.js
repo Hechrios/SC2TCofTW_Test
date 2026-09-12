@@ -30,6 +30,14 @@
   const $outputTag = document.getElementById("outputTag");
   const $actionHint = document.getElementById("actionHint");
   const $themeBtn = document.getElementById("themeBtn");
+  const $swapRail = document.getElementById("swapRail");
+  const $clearRail = document.getElementById("clearRail");
+  const $railMode = document.getElementById("railMode");
+  const $dossierRec = document.getElementById("dossierRec");
+  const $dossierDir = document.getElementById("dossierDir");
+  const $dossierAmb = document.getElementById("dossierAmb");
+  const $footerS2t = document.getElementById("footerS2t");
+  const $footerT2s = document.getElementById("footerT2s");
 
   const MAX_CANDIDATES = 12;
 
@@ -253,6 +261,8 @@
       $actionHint.textContent = "SC → TW";
       $input.placeholder = "在此输入简体汉字…";
       $convert.setAttribute("aria-label", "转化为台湾繁体");
+      if ($railMode) $railMode.textContent = "SC→TW";
+      if ($dossierDir) $dossierDir.textContent = "SC→TW";
     } else {
       $input.style.fontFamily = '"Noto Sans CJK TC", "Noto Sans SC", system-ui, sans-serif';
       $output.style.fontFamily = '"Noto Sans SC", "Noto Sans CJK SC", system-ui, sans-serif';
@@ -264,6 +274,8 @@
       $actionHint.textContent = "TW → SC";
       $input.placeholder = "在此输入繁体汉字…";
       $convert.setAttribute("aria-label", "转化为大陆简体");
+      if ($railMode) $railMode.textContent = "TW→SC";
+      if ($dossierDir) $dossierDir.textContent = "TW→SC";
     }
   }
 
@@ -281,6 +293,11 @@
       $outputInfo.textContent = "上下文已消歧";
     } else {
       $outputInfo.textContent = rich.ambiCount + " 处歧义 · " + rich.count + " 种结果";
+    }
+    if ($dossierAmb) $dossierAmb.textContent = String(rich.ambiCount);
+    if ($dossierRec) {
+      const now = new Date();
+      $dossierRec.textContent = String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
     }
   }
 
@@ -305,6 +322,8 @@
       mergeDict(stPhrases, customS2t);
       setStatus("ready", "字典就绪 · 简→繁 " + stPhrases.map.size + " · 繁→简 " + tsPhrases.map.size);
       $convert.disabled = false;
+      if ($footerS2t) $footerS2t.textContent = String(stPhrases.map.size);
+      if ($footerT2s) $footerT2s.textContent = String(tsPhrases.map.size);
       updateModeUI();
       $input.value = "最可怕的不是随着大潮一起会逐渐迷失方向\n而是清醒地看到了自己　无动于衷吧";
       updateInputCount();
@@ -334,8 +353,12 @@
     $output.innerHTML = "";
     updateInputCount();
     $outputInfo.textContent = "待转化";
+    if ($dossierAmb) $dossierAmb.textContent = "0";
+    if ($dossierRec) $dossierRec.textContent = "—";
     $input.focus();
   });
+  if ($swapRail) $swapRail.addEventListener("click", function () { $swap.click(); });
+  if ($clearRail) $clearRail.addEventListener("click", function () { $clear.click(); });
   $copy.addEventListener("click", async function () {
     const text = $output.textContent;
     if (!text) return;
