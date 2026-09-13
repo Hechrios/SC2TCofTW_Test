@@ -844,9 +844,8 @@ body {
   letter-spacing: inherit;
 }
 .amb details {
-  display: inline-block;
-  margin-left: 6px;
-  vertical-align: baseline;
+  display: block;
+  margin-top: 8px;
 }
 .amb summary {
   display: inline-block;
