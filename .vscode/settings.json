@@ -1,0 +1,7 @@
+﻿{
+  "files.exclude": {
+    "**/.opencode": true,
+    "**/.codeartsdoer": true,
+    "**/.codegraph": true
+  }
+}

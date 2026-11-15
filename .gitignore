@@ -1,1 +1,11 @@
-# 工具与临时目录，不参与部署
+# 宸ュ叿涓庝复鏃剁洰褰曪紝涓嶅弬涓庨儴缃?
+# ---- local tooling / temp files: never deploy these ----
+.opencode/
+~/
+.codeartsdoer/
+.codegraph/
+.merkle-snapshot.json
+Birinchi_Test/
+_probe.*
+cleanup-repo.*
+*.log
