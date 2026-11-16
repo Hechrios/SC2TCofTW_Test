@@ -2,14 +2,31 @@
 <html lang="zh-CN" data-ark-theme="exa" data-ark-depth="complex">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#0B1218">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="简繁转换">
+  <script>
+    // 首屏前定主题，避免亮色系统下的黑闪
+    (function () {
+      try {
+        var s = localStorage.getItem("sc2tw-theme");
+        var t = (s === "day" || s === "night") ? s
+          : (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "day" : "night");
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) { }
+    })();
+  </script>
   <title>简繁字形转换器 · SC ↔ TW</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/noto-sans-cjk-tc.css?v=3">
-  <link rel="stylesheet" href="css/style.css?v=15">
+  <link rel="stylesheet" href="css/style.css?v=16">
 </head>
 <body>
   <!-- ===== 背景层 · multi-ring instrument + star field + grid ===== -->
@@ -256,6 +273,6 @@
     </main>
   </div>
 
-  <script src="js/app.js?v=15"></script>
+  <script src="js/app.js?v=16"></script>
 </body>
 </html>

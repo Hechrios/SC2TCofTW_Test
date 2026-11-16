@@ -11,7 +11,51 @@
 
   let mode = "s2t";
 
-  document.documentElement.setAttribute("data-theme", "night");
+  const THEME_KEY = "sc2tw-theme";
+  const THEME_COLOR = { day: "#E4E9EF", night: "#0B1218" };
+
+  function currentTheme() {
+    return document.documentElement.getAttribute("data-theme") === "day" ? "day" : "night";
+  }
+
+  function applyTheme(theme, persist) {
+    document.documentElement.setAttribute("data-theme", theme);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", THEME_COLOR[theme] || THEME_COLOR.night);
+    if (persist) {
+      try { localStorage.setItem(THEME_KEY, theme); } catch (_) { }
+    }
+  }
+
+  applyTheme(currentTheme(), false);
+
+  // 用户没手动选过主题时，跟随系统日/夜切换（iOS / Android 深色模式）
+  if (window.matchMedia) {
+    const mq = window.matchMedia("(prefers-color-scheme: light)");
+    const onSchemeChange = function (e) {
+      let saved = null;
+      try { saved = localStorage.getItem(THEME_KEY); } catch (_) { }
+      if (!saved) applyTheme(e.matches ? "day" : "night", false);
+    };
+    if (mq.addEventListener) mq.addEventListener("change", onSchemeChange);
+    else if (mq.addListener) mq.addListener(onSchemeChange);
+  }
+
+  function isPhone() {
+    return window.matchMedia("(max-width: 640px)").matches;
+  }
+
+  // 手机上转化后把结果滚进视野，并收起键盘
+  function revealOutput() {
+    if (!isPhone()) return;
+    if (document.activeElement === $input) $input.blur();
+    const el = document.querySelector(".panel--output");
+    if (!el) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const railH = 64; // 吸顶导航高度 + 间隙
+    const top = el.getBoundingClientRect().top + window.pageYOffset - railH;
+    window.scrollTo({ top: top < 0 ? 0 : top, behavior: reduce ? "auto" : "smooth" });
+  }
 
   const $input = document.getElementById("input");
   const $output = document.getElementById("output");
@@ -334,15 +378,17 @@
     }
   }
 
-  $convert.addEventListener("click", doConvert);
+  $convert.addEventListener("click", function () {
+    doConvert();
+    revealOutput();
+  });
   $swap.addEventListener("click", function () {
     mode = mode === "s2t" ? "t2s" : "s2t";
     updateModeUI();
     doConvert();
   });
   $themeBtn.addEventListener("click", function () {
-    const cur = document.documentElement.getAttribute("data-theme");
-    document.documentElement.setAttribute("data-theme", cur === "day" ? "night" : "day");
+    applyTheme(currentTheme() === "day" ? "night" : "day", true);
   });
   $input.addEventListener("input", updateInputCount);
   $input.addEventListener("keydown", function (e) {
@@ -355,10 +401,12 @@
     $outputInfo.textContent = "待转化";
     if ($dossierAmb) $dossierAmb.textContent = "0";
     if ($dossierRec) $dossierRec.textContent = "—";
-    $input.focus();
+    if (!isPhone()) $input.focus();
   });
   if ($swapRail) $swapRail.addEventListener("click", function () { $swap.click(); });
   if ($clearRail) $clearRail.addEventListener("click", function () { $clear.click(); });
+  const $convertRail = document.querySelector('[data-rail="convert"]');
+  if ($convertRail) $convertRail.addEventListener("click", function () { $convert.click(); });
   $copy.addEventListener("click", async function () {
     var parts = [];
     var nodes = $output.querySelectorAll(".amb-line");

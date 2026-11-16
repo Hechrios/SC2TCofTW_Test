@@ -14,11 +14,18 @@
   --t-direct: 240ms;
   --t-reveal: 650ms;
   --t-attention: 1800ms;
+
+  /* 移动端安全区（刘海 / 挖孔 / 手势条），桌面恒为 0 */
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
 }
 
 /* ---------- 夜间主题（默认）---------- */
 :root,
 [data-theme="night"] {
+  color-scheme: dark;
   --bg: #0B1218;
   --bg-2: #0E1720;
   --surface: rgba(156, 176, 195, 0.04);
@@ -73,6 +80,7 @@
 
 /* ---------- 日间主题 ---------- */
 [data-theme="day"] {
+  color-scheme: light;
   --bg: #E4E9EF;
   --bg-2: #DDE3EA;
   --surface: rgba(255, 255, 255, 0.55);
@@ -130,8 +138,25 @@
 
 html, body { height: 100%; }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 触屏基础：去掉点击高亮与 300ms 延迟，按下有即时反馈 */
+button,
+.link-btn,
+summary {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 body {
   font-family: var(--font-sc);
+  overscroll-behavior-y: none;
   background: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
@@ -277,6 +302,7 @@ body {
 .shell {
   position: relative; z-index: 1;
   height: 100vh;
+  height: 100dvh;
   display: grid;
   grid-template-columns: 4.6rem minmax(0, 1fr);
 }
@@ -370,6 +396,7 @@ body {
 .app {
   position: relative;
   height: 100vh;
+  height: 100dvh;
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 32px 16px;
@@ -994,12 +1021,12 @@ body {
    ============================================================ */
 @media (max-width: 860px) {
   body { overflow: auto; }
-  .shell { grid-template-columns: 1fr; height: auto; min-height: 100vh; }
+  .shell { grid-template-columns: 1fr; height: auto; min-height: 100vh; min-height: 100dvh; }
   .rail {
     flex-direction: row;
     justify-content: space-around;
     gap: 0;
-    padding: 8px 6px;
+    padding: calc(8px + var(--sat)) calc(6px + var(--sar)) 8px calc(6px + var(--sal));
     border-right: none;
     border-bottom: 1px solid var(--rail-border);
     position: sticky;
@@ -1011,6 +1038,7 @@ body {
     flex-direction: row;
     gap: 6px;
     padding: 6px 8px;
+    min-height: 44px;
     border-left: none;
     border-bottom: 2px solid transparent;
     flex: 1;
@@ -1026,7 +1054,12 @@ body {
   .rail__note { display: none; }
   .ticker { height: 22px; }
   .ticker__item { font-size: 9px; }
-  .app { height: auto; min-height: calc(100vh - 56px); padding: 0 16px 16px; }
+  .app {
+    height: auto;
+    min-height: calc(100vh - 56px);
+    min-height: calc(100dvh - 56px);
+    padding: 0 calc(16px + var(--sar)) calc(16px + var(--sab)) calc(16px + var(--sal));
+  }
   .workspace { grid-template-columns: 1fr; }
   .action { flex-direction: row; padding: 6px 0; }
   .action__ring { display: none; }
@@ -1039,6 +1072,237 @@ body {
   .dossier { margin: 0; }
   .footer__bar { flex-wrap: wrap; gap: 8px; }
   .footer__sep { display: none; }
+}
+
+/* ============================================================
+   手机 · Android / iOS
+   —— 安全区、动态视口、44/48 触控目标、拇指区主按钮
+   ============================================================ */
+@media (max-width: 640px) {
+  body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 装饰性滚动条幅让位给内容 */
+  .ticker { display: none; }
+
+  /* 顶部导航：吸顶 + 刘海安全区 */
+  .rail {
+    justify-content: space-between;
+    gap: 2px;
+    padding: calc(6px + var(--sat)) calc(10px + var(--sar)) 6px calc(10px + var(--sal));
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    backdrop-filter: blur(20px) saturate(1.4);
+  }
+  .rail__item {
+    min-height: 44px;
+    padding: 8px 4px;
+    gap: 5px;
+  }
+  .rail__num { font-size: 9px; }
+
+  .app {
+    padding: 0 calc(12px + var(--sar)) calc(18px + var(--sab)) calc(12px + var(--sal));
+    gap: 10px;
+  }
+
+  /* 标题区压缩为两行：品牌 / 状态 + 主题，避免窄屏横向溢出 */
+  .header {
+    padding-top: 10px;
+    gap: 8px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .brand { gap: 10px; min-width: 0; }
+  .brand__mark { width: 38px; height: 38px; flex: 0 0 38px; }
+  .brand__eyebrow { font-size: 9px; letter-spacing: 0.12em; margin-bottom: 1px; }
+  .brand__text { min-width: 0; }
+  .brand__text h1 { font-size: 19px; }
+  .brand__sub { font-size: 11px; margin-top: 2px; }
+  .header__right { align-self: stretch; justify-content: space-between; gap: 8px; }
+  .status { padding: 6px 10px; font-size: 10px; gap: 6px; }
+  .status__text {
+    max-width: 12em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .theme-btn { width: 44px; height: 44px; flex: 0 0 44px; }
+
+  .dossier { padding: 6px 10px; }
+  .dossier__key { font-size: 8.5px; letter-spacing: 0.12em; }
+  .dossier__val { font-size: 10.5px; }
+  .dossier__sep { margin: 0 8px; }
+
+  /* 单列纵向流：输入 → 主按钮 → 输出 */
+  .workspace {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+  }
+
+  .panel { border-radius: 4px; }
+  .panel__head { padding: 12px 14px 0; gap: 8px; }
+  .panel__index, .panel__tag { font-size: 9px; }
+  .panel__label { font-size: 12px; }
+  .panel__field {
+    margin: 8px 14px 0;
+    padding: 6px 2px;
+    font-size: 17px;          /* ≥16px：iOS 聚焦时不再自动放大 */
+    line-height: 1.9;
+  }
+  .panel__field--output {
+    flex: 0 0 auto;           /* 内容撑高面板，长文不被裁掉 */
+    overflow-y: visible;      /* 手机上不要嵌套滚动 */
+    max-height: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-margin-top: calc(58px + var(--sat));
+  }
+  .panel--input { min-height: 232px; min-height: 34dvh; }
+  .panel--output { min-height: 180px; }
+  .panel__foot { padding: 8px 14px 12px; margin-top: 6px; }
+  .panel__count { font-size: 10.5px; }
+  .link-btn {
+    min-height: 44px;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  /* 中间机关 → 通栏主操作区（拇指可达） */
+  .action {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 2px 0;
+  }
+  .action__ring,
+  .action__crosshair,
+  .action__hint { display: none; }
+  .swap-btn {
+    width: 50px; height: 50px;
+    flex: 0 0 50px;
+  }
+  .convert-btn {
+    flex: 1;
+    justify-content: center;
+    min-height: 50px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 15px;
+    animation: none;
+  }
+
+  .footer { padding-top: 2px; }
+  .footer__bar { padding: 8px 10px; row-gap: 6px; }
+  .footer__index { margin-right: 4px; font-size: 9px; }
+  .footer__stat-key { font-size: 8.5px; letter-spacing: 0.1em; }
+  .footer__stat-val { font-size: 10.5px; }
+  .footer__note { max-width: 100%; font-size: 10.5px; padding: 0 2px; }
+
+  /* 歧义候选：整行可点，行高 ≥44 */
+  .amb summary {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+  .amb-candidate-item { padding: 9px 10px; gap: 10px; }
+  .amb-candidate-item__num { min-width: 24px; height: 24px; font-size: 11px; }
+  .amb-candidate-item__text { font-size: 15px; line-height: 1.7; }
+
+  /* 省电：背景环降透明度，模糊不吃满 */
+  .bg-orbit { opacity: 0.45; }
+  .panel {
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+}
+
+/* 超窄屏（iPhone SE / 小屏安卓） */
+@media (max-width: 380px) {
+  .brand__eyebrow { display: none; }
+  .brand__text h1 { font-size: 17px; }
+  .brand__sub { font-size: 10.5px; }
+  .status__text { max-width: 8em; }
+  .app { gap: 8px; }
+}
+
+/* 横屏手机：垂直空间极紧 */
+@media (max-width: 900px) and (max-height: 480px) and (orientation: landscape) {
+  .ticker { display: none; }
+  .rail {
+    padding-top: calc(4px + var(--sat));
+    padding-bottom: 4px;
+  }
+  .rail__item { min-height: 40px; }
+  .header { padding-top: 6px; }
+  .brand__mark { width: 34px; height: 34px; flex-basis: 34px; }
+  .brand__text h1 { font-size: 17px; }
+  .panel--input { min-height: 62dvh; }
+  .panel--output { min-height: 62dvh; }
+  .app { padding-bottom: calc(12px + var(--sab)); }
+}
+
+/* 触屏设备：hover 态不能“粘住”，改成按下反馈 */
+@media (hover: none) and (pointer: coarse) {
+  .rail__item:hover {
+    color: var(--text-dim);
+    background: transparent;
+    border-left-color: transparent;
+    border-bottom-color: transparent;
+  }
+  .rail__item[aria-current="page"]:hover {
+    color: var(--signal-soft);
+    background: var(--surface);
+    border-left-color: var(--signal);
+    border-bottom-color: var(--signal);
+  }
+  .theme-btn:hover { transform: none; }
+  .swap-btn:hover {
+    transform: none;
+    color: var(--text-dim);
+    border-color: var(--border);
+    background: var(--surface);
+  }
+  .link-btn:hover {
+    color: var(--text-dim);
+    border-color: transparent;
+    background: none;
+  }
+  .panel:hover { border-color: var(--border); }
+  .convert-btn:hover:not(:disabled) {
+    transform: none;
+    border-color: var(--border-strong);
+    background: transparent;
+  }
+  .amb summary:hover {
+    color: var(--text-dim);
+    border-color: var(--border);
+    background: var(--surface);
+  }
+  .amb-candidate-item:hover {
+    background: var(--candidates-item-bg);
+    border-color: var(--candidates-item-border);
+  }
+
+  /* 按下即时反馈 120ms */
+  .rail__item:active,
+  .link-btn:active,
+  .amb summary:active {
+    background: var(--signal-faint);
+    color: var(--signal-soft);
+  }
+  .theme-btn:active,
+  .swap-btn:active {
+    transform: scale(0.92);
+  }
+  .convert-btn:active:not(:disabled) {
+    transform: scale(0.97);
+    background: var(--signal-faint);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

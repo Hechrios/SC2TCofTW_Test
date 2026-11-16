@@ -1,4 +1,3 @@
-# 宸ュ叿涓庝复鏃剁洰褰曪紝涓嶅弬涓庨儴缃?
 # ---- local tooling / temp files: never deploy these ----
 .opencode/
 ~/
@@ -8,4 +7,5 @@
 Birinchi_Test/
 _probe.*
 cleanup-repo.*
+push.bat
 *.log
